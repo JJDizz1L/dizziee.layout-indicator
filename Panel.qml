@@ -40,6 +40,17 @@ BarWidget {
     }
   }
 
+  // Hyprland emits no event when a workspace's tiledLayout changes (its
+  // activelayout event is the keyboard layout). A slow socket read catches
+  // changes made by layout actions or `hyprctl keyword general:layout`
+  // without polling at a visible cadence.
+  Timer {
+    interval: 30000
+    running: true
+    repeat: true
+    onTriggered: root.refresh()
+  }
+
   implicitWidth: button.implicitWidth
   implicitHeight: button.implicitHeight
 

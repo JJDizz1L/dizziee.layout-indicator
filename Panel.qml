@@ -3,6 +3,8 @@ import Quickshell
 import Quickshell.Hyprland
 import qs.Ui
 import qs.Commons
+import qs.Commons as Commons
+import "Model.js" as Model
 
 BarWidget {
   id: root
@@ -14,15 +16,16 @@ BarWidget {
     const ws = Hyprland.focusedWorkspace
     const ipc = ws ? ws.lastIpcObject : null
     const next = ipc ? String(ipc.tiledLayout || "") : ""
-    return root.glyphFor(next) !== "" ? next : "dwindle"
+    return Model.cleanLayout(next)
   }
 
   function glyphFor(layout) {
-    if (layout === "dwindle") return "󰕰"
-    if (layout === "master") return "󰕬"
-    if (layout === "monocle") return "󰖯"
-    if (layout === "scrolling") return ""
-    return ""
+    return Model.glyphFor(layout)
+  }
+
+  Commons.Translations {
+    id: strings
+    directory: Qt.resolvedUrl("i18n")
   }
 
   function refresh() {
@@ -61,6 +64,6 @@ BarWidget {
     text: root.glyphFor(root.layout)
     fixedWidth: root.bar && root.bar.vertical ? -1 : Style.space(27)
     fixedHeight: root.bar && root.bar.vertical ? Style.space(26) : -1
-    tooltipText: "Layout: " + root.layout
+    tooltipText: strings.t("layout.tooltip").arg(root.layout)
   }
 }
